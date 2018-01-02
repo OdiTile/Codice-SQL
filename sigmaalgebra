@@ -1,0 +1,38 @@
+/* crea la tabella S */
+CREATE TABLE S
+(A1 INT,
+A2 INT);
+/* crea la tabella T */
+CREATE TABLE T
+(B1 INT,
+B2 INT,
+B3 INT);
+
+/* popolare le due tabelle */
+INSERT INTO S VALUES (2,4);
+INSERT INTO S VALUES (3,5);
+INSERT INTO S VALUES (5,3);
+INSERT INTO S VALUES (2,5);
+INSERT INTO S VALUES (4,2);
+INSERT INTO T VALUES (3,2,4);
+INSERT INTO T VALUES (5,6,3);
+INSERT INTO T VALUES (2,3,4);
+INSERT INTO T VALUES (5,2,2);
+
+/* inner join nella tabella R */
+SELECT S.A1, S.A2, T.B1, T.B2, T.B3
+INTO R
+FROM S, T
+WHERE S.A2 = T.B3;
+
+/* alternativamente */
+SELECT S.*, T.*
+INTO R
+FROM S INNER JOIN T ON S.A2 = T.B3;
+
+/* proiezione */
+SELECT A1, A2, B1, B3
+FROM R
+WHERE B3 > 3;
+
+...

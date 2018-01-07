@@ -1,0 +1,61 @@
+/* da interi a reali */
+Update AnagraficaPulita
+Set PesoReale=Peso*1.0;
+Update AnagraficaPulita
+Set AltezzaR=Altezza*1.0;
+
+
+/* correlazione AnagraficaPulita(PesoReale;AltezzaR) */
+/* correlazione = 0,534506088846947  ok */
+SELECT
+(sum((PesoReale-(SELECT avg(PesoReale) 
+FROM AnagraficaPulita))*
+(AltezzaR-(SELECT avg(AltezzaR) 
+FROM AnagraficaPulita)))/
+(SELECT count (PesoReale) FROM AnagraficaPulita))/
+((SELECT stdevp(PesoReale) FROM AnagraficaPulita)* 
+(SELECT stdevp(AltezzaR) FROM AnagraficaPulita))
+FROM AnagraficaPulita;
+
+/* regressione lineare: pendenza */
+/* b = 0,901505833069221  ok */
+SELECT
+(sum((PesoReale-(SELECT avg(PesoReale) 
+FROM AnagraficaPulita))*
+(AltezzaR-(SELECT avg(AltezzaR) 
+FROM AnagraficaPulita)))/
+(SELECT count (PesoReale) FROM AnagraficaPulita))
+/
+(SELECT varp(AltezzaR) FROM AnagraficaPulita)
+FROM AnagraficaPulita;
+
+/* regressione lineare: intercetta */
+/* intercetta = -76,5067141695873 ok */
+SELECT
+avg(PesoReale) - (0.901505833069221 * avg(AltezzaR) )
+FROM AnagraficaPulita;
+
+/* valori stimati per il peso e residui
+Update AnagraficaPulita
+set PesoSt=-76.5067141695873 + 0.901505833069221 * Altezza;
+
+Update AnagraficaPulita
+set Residui=PesoReale-PesoSt;
+
+/*Analisi della varianza ANOVA modello lineare
+Select 
+round(varp(PesoReale)*count(PesoReale),2) as SST,
+round(varp(PesoSt)* count(PesoSt),2) as SSR,
+round(varp(Residui)* count(Residui),2) as SSE,
+SSR + SSE as ‘somma’
+FROM AnagraficaPulita;
+/*
+Regressione
+	SST		SSR		SSE	‘somma’
+	95161,26	27187,26	67974	95161,26
+*/
+
+
+
+
+
